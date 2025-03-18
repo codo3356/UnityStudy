@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -6,13 +7,23 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5f;
     Animator ani;
 
-    public GameObject bullet; // 총알은 4종류(파워업)일테니 4개 배열로 만들것
+    public GameObject[] bullet; // 총알은 4종류(파워업)일테니 4개 배열로 만들것
+    public GameObject lazer;
+    GameObject go = null;
+    public float gValue = 0f;
+
     public Transform pos = null;
 
     //아이템
 
-    private int powerlvl;
+    private int powerlvl = 0;
     //레이저
+
+    //게이지바
+    public Image Gage;
+
+    [SerializeField]
+    private GameObject powerup; // private 변수를 인스펙터에 등록하는 방법. 
 
     void Start()
     {
@@ -47,6 +58,32 @@ public class Player : MonoBehaviour
             //Instantiate(bullet, pos.position, Quaternion.identity);
             Shoot();
         }
+        else if (Input.GetKey(KeyCode.Space))
+        {
+            gValue += Time.deltaTime;
+            Gage.fillAmount = gValue;
+            if(gValue >=1)
+            {
+                go = Instantiate(lazer,pos.position,Quaternion.identity);
+                Destroy(go, 3);
+                gValue = 0;
+            }
+
+            //if (go == null)
+            //{
+            //    go = Instantiate(lazer,pos.position,Quaternion.identity);
+            //}
+        }
+        else
+        {
+            if(gValue >= 0)
+            {
+                gValue -= Time.deltaTime;
+            }
+            Gage.fillAmount = gValue;
+            //Destroy(go);
+            
+        }
 
         transform.Translate(moveX, moveY, 0);
         //캐릭터가 밖으로 나가지 않도록
@@ -63,8 +100,12 @@ public class Player : MonoBehaviour
     {
         if (collision.CompareTag("ItemPower"))
         {
-            if(powerlvl < 4)
-            powerlvl++;
+            if (powerlvl < 3)
+            {
+                powerlvl++;
+                GameObject go = Instantiate(powerup, transform.position, Quaternion.identity);
+                Destroy(go, 1);
+            }
             Destroy(collision.gameObject);
         }
 
@@ -72,39 +113,40 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
-        switch (powerlvl)
-        {
-            case 0:
-                Instantiate(bullet, pos.position, Quaternion.identity);
-                break;
+        Instantiate(bullet[powerlvl],pos.position, Quaternion.identity);   
+        //switch (powerlvl)
+        //{
+        //    case 0:
+        //        Instantiate(bullet, pos.position, Quaternion.identity);
+        //        break;
 
-            case 1:
-                Instantiate(bullet, new Vector3(pos.position.x-0.1f ,pos.position.y,0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x + 0.1f, pos.position.y, 0), Quaternion.identity);
-                break;
+        //    case 1:
+        //        Instantiate(bullet, new Vector3(pos.position.x-0.1f ,pos.position.y,0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x + 0.1f, pos.position.y, 0), Quaternion.identity);
+        //        break;
 
-            case 2:
-                Instantiate(bullet, new Vector3(pos.position.x - 0.2f, pos.position.y-0.2f, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x, pos.position.y, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x + 0.2f, pos.position.y-0.2f, 0), Quaternion.identity);
-                break;
+        //    case 2:
+        //        Instantiate(bullet, new Vector3(pos.position.x - 0.2f, pos.position.y-0.2f, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x, pos.position.y, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x + 0.2f, pos.position.y-0.2f, 0), Quaternion.identity);
+        //        break;
 
-            case 3:
-                Instantiate(bullet, new Vector3(pos.position.x - 0.3f, pos.position.y - 0.2f, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x - 0.1f, pos.position.y, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x + 0.1f, pos.position.y, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x + 0.3f, pos.position.y - 0.2f, 0), Quaternion.identity);
+        //    case 3:
+        //        Instantiate(bullet, new Vector3(pos.position.x - 0.3f, pos.position.y - 0.2f, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x - 0.1f, pos.position.y, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x + 0.1f, pos.position.y, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x + 0.3f, pos.position.y - 0.2f, 0), Quaternion.identity);
 
-                break;
+        //        break;
 
-            case 4:
-                Instantiate(bullet, new Vector3(pos.position.x - 0.4f, pos.position.y - 0.4f, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x - 0.2f, pos.position.y - 0.2f, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x, pos.position.y, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x + 0.2f, pos.position.y - 0.2f, 0), Quaternion.identity);
-                Instantiate(bullet, new Vector3(pos.position.x + 0.4f, pos.position.y - 0.4f, 0), Quaternion.identity);
-                break;
-        }
+        //    case 4:
+        //        Instantiate(bullet, new Vector3(pos.position.x - 0.4f, pos.position.y - 0.4f, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x - 0.2f, pos.position.y - 0.2f, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x, pos.position.y, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x + 0.2f, pos.position.y - 0.2f, 0), Quaternion.identity);
+        //        Instantiate(bullet, new Vector3(pos.position.x + 0.4f, pos.position.y - 0.4f, 0), Quaternion.identity);
+        //        break;
+        //}
             
     }
 

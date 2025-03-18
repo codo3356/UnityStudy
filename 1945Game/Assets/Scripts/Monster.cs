@@ -9,6 +9,7 @@ public class Monster : MonoBehaviour
     public Transform launcher2;
     public GameObject bullet;
     public GameObject item;
+    public int HP = 100;
 
     void Start()
     {
@@ -37,12 +38,29 @@ public class Monster : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void Damage(int attack)
+    {
+        HP-= attack;
+        if(HP < 0)
+        {
+            ItemDrop();
+            Destroy(gameObject);
+        }
+
+
+    }
+
     private void OnDestroy()
     {
-        if(Random.Range(1,100)<=40) //40ÆÛ È®·ü
-        {
-            Instantiate(item, transform.position, Quaternion.identity);
-        }
+        //if(Random.Range(1,100)<=40) //40ÆÛ È®·ü
+        //{
+        //    ItemDrop();
+        //}
         Destroy(gameObject );
+    }
+
+    public void ItemDrop()
+    {
+        Instantiate(item, transform.position, Quaternion.identity);
     }
 }

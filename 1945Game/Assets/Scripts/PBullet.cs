@@ -4,6 +4,7 @@ public class PBullet : MonoBehaviour
 {
     public float Speed = 4.0f;
     //공격력
+    public int Attack = 10;
     //이펙트
     public GameObject explosion;
 
@@ -33,7 +34,19 @@ public class PBullet : MonoBehaviour
             Destroy(gameObject) ;
 
             //몬스터 삭제
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<Monster>().Damage(Attack);
+            //PoolManager.Instance.Return(collision.gameObject);
+        }
+
+        if (collision.CompareTag("Boss"))
+        {
+            //Destroy(collision.gameObject);
+            //이펙트 생성 해서 오브젝트 변수에 넣어줌
+            GameObject this_explosion = Instantiate(explosion, collision.transform.position, Quaternion.identity);
+            //1초 뒤에 삭제
+            Destroy(this_explosion, 1);
+            Destroy(gameObject);
         }
     }
+
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Homing : MonoBehaviour
@@ -7,6 +8,8 @@ public class Homing : MonoBehaviour
     //방향 벡터
     Vector2 dir; 
     Vector2 dirNo;
+    Vector2 vec2 = Vector2.down;
+    bool flag = false;
     void Start()
     {
         //플레이어 찾기(태그 사용)
@@ -17,20 +20,17 @@ public class Homing : MonoBehaviour
         dir = target.transform.position - transform.position;
         // 방향벡터(정규화, 노말라이즈)
         dirNo = dir.normalized;
+
     }
 
     void Update()
     {
-        //// A - B 벡터 : B가 A를 바라보는 벡터
-        //dir = target.transform.position - transform.position;
-        //// 방향벡터(정규화, 노말라이즈)
-        //dirNo = dir.normalized;
-
-
-        transform.Translate(dirNo * Speed*Time.deltaTime);
+        transform.Translate(dirNo * Speed* Time.deltaTime);
 
         //transform.position = Vector3.MoveTowards(transform.position, target.transform.position,Speed*Time.deltaTime);
     }
+
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
